@@ -8,6 +8,35 @@ from __future__ import annotations
 import numpy as np
 
 
+def train_test_split(
+    x: np.ndarray,
+    y: np.ndarray,
+    test_size: float = 0.2,
+    random_state: int | None = None,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """Shuffle paired one-feature data into train and test sets."""
+    x = np.asarray(x, dtype=float).reshape(-1)
+    y = np.asarray(y, dtype=float).reshape(-1)
+
+    if x.size == 0 or y.size == 0:
+        raise ValueError("x and y must not be empty")
+    if x.size != y.size:
+        raise ValueError("x and y must contain the same number of samples")
+    if not np.isfinite(x).all() or not np.isfinite(y).all():
+        raise ValueError("x and y must contain only finite numbers")
+    if not 0.0 < test_size < 1.0:
+        raise ValueError("test_size must be between zero and one")
+
+    n_test = int(np.ceil(x.size * test_size))
+    if n_test >= x.size:
+        raise ValueError("test_size must leave at least one training sample")
+
+    indices = np.random.default_rng(random_state).permutation(x.size)
+    test_indices = indices[:n_test]
+    train_indices = indices[n_test:]
+    return x[train_indices], x[test_indices], y[train_indices], y[test_indices]
+
+
 class LinearRegression:
     """Simple univariate linear regression trained with gradient descent."""
 

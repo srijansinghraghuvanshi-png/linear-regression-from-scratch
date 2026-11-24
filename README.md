@@ -9,6 +9,7 @@ A beginner-friendly machine-learning project that implements **linear regression
 - Gradients for the weight and bias
 - Gradient descent updates
 - Making predictions and evaluating training error
+- Shuffling paired data into reproducible training and test sets
 - Basic input validation and unit tests
 
 ## Project structure
@@ -69,6 +70,10 @@ dMSE/dbias   = (2 / n) * sum(prediction - actual)
 ```
 
 ## Experiment
+
+Use `train_test_split(x, y, test_size=0.2, random_state=42)` to shuffle
+paired feature and target arrays into training and test sets. Pass the training
+arrays to `fit`, then evaluate the held-out arrays with `mean_squared_error`.
 
 The demo creates reproducible synthetic data close to `y = 4x + 7`, adds random noise, and trains the model. The learned values should be close to a weight of 4 and a bias of 7; exact values vary with the generated noise.
 

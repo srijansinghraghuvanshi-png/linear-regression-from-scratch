@@ -3,10 +3,29 @@ import unittest
 
 import numpy as np
 
-from linear_regression import LinearRegression
+from linear_regression import LinearRegression, train_test_split
 
 
 class TestLinearRegression(unittest.TestCase):
+    def test_train_test_split_preserves_pairs_and_is_reproducible(self):
+        x = np.arange(10, dtype=float)
+        y = 10.0 * x + 1.0
+
+        split = train_test_split(x, y, test_size=0.25, random_state=7)
+        train_x, test_x, train_y, test_y = split
+        repeated = train_test_split(x, y, test_size=0.25, random_state=7)
+
+        self.assertEqual(len(train_x), 7)
+        self.assertEqual(len(test_x), 3)
+        np.testing.assert_allclose(train_y, 10.0 * train_x + 1.0)
+        np.testing.assert_allclose(test_y, 10.0 * test_x + 1.0)
+        for actual, expected in zip(split, repeated):
+            np.testing.assert_array_equal(actual, expected)
+
+    def test_train_test_split_rejects_invalid_test_size(self):
+        with self.assertRaises(ValueError):
+            train_test_split(np.array([1.0, 2.0]), np.array([3.0, 4.0]), test_size=1.0)
+
     def test_learns_simple_line(self):
         # Centering x makes this small gradient-descent test converge quickly.
         x = np.linspace(-5.0, 5.0, 100)
